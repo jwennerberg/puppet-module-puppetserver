@@ -1,5 +1,5 @@
 #
-define puppetserver::config::java_arg($value) {
+define puppetserver::config::java_arg($value, $ensure = 'present') {
 
   $target = $::osfamily ? {
     'Debian' => '/etc/default/puppetserver',
@@ -7,7 +7,7 @@ define puppetserver::config::java_arg($value) {
   }
 
   ini_subsetting { "java_arg-${name}":
-    ensure     => present,
+    ensure     => $ensure,
     path       => $target,
     section    => '',
     setting    => 'JAVA_ARGS',
