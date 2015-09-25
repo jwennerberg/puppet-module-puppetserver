@@ -1,0 +1,15 @@
+{
+  "name": "jwennerberg-puppetserver",
+  "version": "0.1.0",
+  "author": "jwennerberg",
+  "summary": "Manage Puppet Server",
+  "license": "Apache-2.0",
+  "source": "git://github.com/jwennerberg/puppet-module-puppetserver.git",
+  "project_page": "https://github.com/jwennerberg/puppet-module-puppetserver",
+  "issues_url": "https://github.com/jwennerberg/puppet-module-puppetserver/issues",
+  "dependencies": [
+    { "name":"puppetlabs-stdlib","version_requirement":">= 1.0.0" },
+    { "name":"puppetlabs-inifile","version_requirement":">= 1.1.0" },
+    { "name":"puppetlabs-hocon","version_requirement":">= 0.9.0 < 1.0.0" }
+  ]
+}
