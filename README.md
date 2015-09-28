@@ -56,6 +56,44 @@ for upgrading, you may wish to include an additional section here: Upgrading
 Put the classes, types, and resources for customizing, configuring, and doing
 the fancy stuff with your module here.
 
+### Hiera Usage
+
+Example config:
+
+    puppetserver::service_ensure: stopped
+    puppetserver::service_enable: false
+
+    puppetserver::java_args:
+      '-Xmx':
+        value: '4g'
+      '-XX:MaxPermSize=':
+        value: '512m'
+
+    puppetserver::puppetserver_settings:
+      'profiler.enabled':
+        setting: 'profiler.enabled'
+        value: true
+        type: 'boolean'
+      'puppet-admin.client-whitelitst':
+        setting: 'puppet-admin.client-whitelist'
+        type: 'array'
+        value:
+          - 'host1.domain.tld'
+
+    puppetserver::webserver_settings:
+      'webserver.ssl-port':
+        setting: 'webserver.ssl-port'
+        type: 'number'
+        value: 9140
+
+    puppetserver::bootstrap_settings:
+      'ca.certificate-authority-service':
+        line: 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service'
+        match: 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service'
+      'ca.certificate-authority-disabled-service':
+        line: '#puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service'
+        match: 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service'
+
 ## Reference
 
 Here, list the classes, types, providers, facts, etc contained in your module.
