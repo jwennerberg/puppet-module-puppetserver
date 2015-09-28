@@ -8,8 +8,10 @@ class puppetserver::config(
 
   if versioncmp($::puppetversion, '4.0.0') >= 0 {
     $configdir = '/etc/puppetlabs/puppetserver/conf.d'
+    $bootstrap_cfg = '/etc/puppetlabs/puppetserver/bootstrap.cfg'
   } else {
     $configdir = '/etc/puppetserver/conf.d'
+    $bootstrap_cfg = '/etc/puppetserver/bootstrap.cfg'
   }
 
   if $java_args {
@@ -18,6 +20,14 @@ class puppetserver::config(
       'notify' => Service[$::puppetserver::service_name],
     }
     create_resources('puppetserver::config::java_arg', $java_args, $java_args_defaults)
+  }
+
+  if $bootstrap_settings {
+    validate_hash($bootstrap_settings)
+    $bootstrap_defaults = {
+      'path' => $bootstrap_cfg,
+    }
+    create_resources(file_line, $bootstrap_settings, $bootstrap_defaults)
   }
 
   if $puppetserver_settings {

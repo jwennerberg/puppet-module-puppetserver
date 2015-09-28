@@ -22,7 +22,6 @@ class puppetserver (
   } else {
     $_service_enable = $service_enable
   }
-  notify { "se: ${service_enable}": }
   validate_bool($_service_enable)
 
   if is_array($package_name) {
