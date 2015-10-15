@@ -49,4 +49,6 @@ class puppetserver (
       require => Package[$package_name],
     }
   }
+
+  Class[puppetserver::config] ~> Service[$service_name]
 }
