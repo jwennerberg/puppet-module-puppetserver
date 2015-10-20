@@ -36,7 +36,7 @@ class puppetserver::config(
       'ensure' => 'present',
       'path'   => "${configdir}/puppetserver.conf",
     }
-    create_resources(hocon_setting, $puppetserver_settings, $puppetserver_defaults)
+    create_resources('puppetserver::config::hocon', $puppetserver_settings, $puppetserver_defaults)
   }
 
   if $webserver_settings {
@@ -45,6 +45,6 @@ class puppetserver::config(
       'ensure' => 'present',
       'path'   => "${configdir}/webserver.conf",
     }
-    create_resources(hocon_setting, $webserver_settings, $webserver_defaults)
+    create_resources('puppetserver::config::hocon', $webserver_settings, $webserver_defaults)
   }
 }

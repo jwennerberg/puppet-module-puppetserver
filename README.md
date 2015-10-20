@@ -41,19 +41,17 @@ Example config:
         value: '512m'
 
     puppetserver::puppetserver_settings:
+      'jruby-puppet.max-active-instances':
+        value: 2
       'profiler.enabled':
-        setting: 'profiler.enabled'
         value: true
-        type: 'boolean'
       'puppet-admin.client-whitelitst':
-        setting: 'puppet-admin.client-whitelist'
         type: 'array'
         value:
           - 'host1.domain.tld'
 
     puppetserver::webserver_settings:
       'webserver.ssl-port':
-        setting: 'webserver.ssl-port'
         type: 'number'
         value: 9140
 
