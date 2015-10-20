@@ -50,5 +50,5 @@ class puppetserver (
     }
   }
 
-  Class[puppetserver::config] ~> Service[$service_name]
+  Package[$package_name] -> Class[puppetserver::config] ~> Service[$service_name]
 }
