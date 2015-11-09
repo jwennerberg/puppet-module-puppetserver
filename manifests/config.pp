@@ -5,7 +5,7 @@ class puppetserver::config(
   $bootstrap_settings    = $::puppetserver::bootstrap_settings,
   $puppetserver_settings = $::puppetserver::puppetserver_settings,
   $webserver_settings    = $::puppetserver::webserver_settings,
-) {
+) inherits puppetserver {
 
   if is_string($enable_ca) {
     $_enable_ca = str2bool($enable_ca)

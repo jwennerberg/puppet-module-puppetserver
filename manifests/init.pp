@@ -3,7 +3,7 @@
 # Module to manage puppetserver
 #
 class puppetserver (
-  $enable_ca             = false,
+  $enable_ca             = true,
   $package_ensure        = 'installed',
   $package_name          = 'puppetserver',
   $service_enable        = true,

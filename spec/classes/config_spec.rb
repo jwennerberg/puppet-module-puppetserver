@@ -6,12 +6,14 @@ describe 'puppetserver::config' do
     it { should contain_class('puppetserver::config') }
     it {
       should contain_file_line('ca.certificate-authority-service').with({
-        'line' => '#puppetlabs.services.ca.certificate-authority-service/certificate-authority-service',
+        'line' => 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service',
+        'path' => '/etc/puppetserver/bootstrap.cfg',
       })
     }
     it {
       should contain_file_line('ca.certificate-authority-disabled-service').with({
-        'line' => 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
+        'line' => '#puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
+        'path' => '/etc/puppetserver/bootstrap.cfg',
       })
     }
   end
