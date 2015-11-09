@@ -9,10 +9,10 @@ class puppetserver (
   $service_enable        = true,
   $service_ensure        = 'running',
   $service_name          = 'puppetserver',
-  $java_args             = {},
-  $bootstrap_settings    = {},
-  $puppetserver_settings = {},
-  $webserver_settings    = {},
+  $java_args             = undef,
+  $bootstrap_settings    = undef,
+  $puppetserver_settings = undef,
+  $webserver_settings    = undef,
 ) {
 
   validate_re($package_ensure, '^installed$|^present$|^absent$')

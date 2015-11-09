@@ -56,12 +56,14 @@ class puppetserver::config(
 
   if $bootstrap_settings {
     validate_hash($bootstrap_settings)
-    $bootstrap_defaults = {
-      'path' => $bootstrap_cfg,
-    }
     $_bootstrap_settings = merge($bootstrap_ca_defaults, $bootstrap_settings)
-    create_resources(file_line, $_bootstrap_settings, $bootstrap_defaults)
+  } else {
+    $_bootstrap_settings = $bootstrap_ca_defaults
   }
+  $bootstrap_defaults = {
+    'path' => $bootstrap_cfg,
+  }
+  create_resources(file_line, $_bootstrap_settings, $bootstrap_defaults)
 
   if $puppetserver_settings {
     validate_hash($puppetserver_settings)
