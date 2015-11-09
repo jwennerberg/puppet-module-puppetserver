@@ -17,6 +17,7 @@ class puppetserver (
 
   validate_re($package_ensure, '^installed$|^present$|^absent$')
   validate_re($service_ensure, '^running$|^stopped$')
+  validate_string($service_name)
 
   if is_string($service_enable) {
     $_service_enable = str2bool($service_enable)
@@ -25,16 +26,8 @@ class puppetserver (
   }
   validate_bool($_service_enable)
 
-  if is_array($package_name) {
-    validate_array($package_name)
-  } else {
+  if ! is_array($package_name) {
     validate_string($package_name)
-  }
-
-  if is_array($service_name) {
-    validate_array($service_name)
-  } else {
-    validate_string($service_name)
   }
 
   package { $package_name:
