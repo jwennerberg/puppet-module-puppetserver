@@ -29,6 +29,17 @@ describe 'puppetserver' do
     end
   end
 
+  context "service_name specified" do
+    let(:params) { { :service_name => 'puppetserver_alt' } }
+    it { should compile.with_all_deps }
+    it {
+      should contain_service('puppetserver_alt').with({
+        'ensure' => 'running',
+        'enable' => 'true',
+      })
+    }
+  end
+
   describe 'service_enable' do
     ['true',true].each do |value|
       context "as #{value}" do
