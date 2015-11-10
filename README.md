@@ -1,38 +1,34 @@
 # puppetserver
 
-#### Table of Contents
-
-1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with puppetserver](#setup)
-    * [What puppetserver affects](#what-puppetserver-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with puppetserver](#beginning-with-puppetserver)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
-
 ## Overview
 
 Puppet module to manage Puppet Server
 
-## Setup
-
 ### Dependencies
 
+* [puppetlabs-stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) (>= 4.0.0)
+* [puppetlabs-inifile](https://forge.puppetlabs.com/puppetlabs/inifile) (>= 1.1.0)
+* [puppetlabs-hocon](https://forge.puppetlabs.com/puppetlabs/hocon) (>= 0.9.0 < 1.0.0)
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+Manage puppetserver with default settings
 
-### Hiera Usage
+    include puppetserver
 
-Example config:
+### Example configuration
 
-    puppetserver::service_ensure: stopped
-    puppetserver::service_enable: false
+    class { puppetserver:
+      enable_ca => false,
+      java_args => {
+        '-Xms' => { 'value' => '2g' },
+        '-Xmx' => { 'value' => '4g' }
+      },
+    }
+
+### Hiera Example
+
+    puppetserver::enable_ca: false
 
     puppetserver::java_args:
       '-Xmx':
@@ -42,7 +38,7 @@ Example config:
 
     puppetserver::puppetserver_settings:
       'jruby-puppet.max-active-instances':
-        value: 2
+        value: 6
       'profiler.enabled':
         value: true
       'puppet-admin.client-whitelitst':
@@ -55,32 +51,124 @@ Example config:
         type: 'number'
         value: 9140
 
-    puppetserver::bootstrap_settings:
-      'ca.certificate-authority-service':
-        line: 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service'
-        match: 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service'
-      'ca.certificate-authority-disabled-service':
-        line: '#puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service'
-        match: 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service'
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+### Class: puppetserver
+
+Class to install package and manage puppetserver service. Configuration is done by `puppetserver::config`.
+
+#### `enable_ca`
+Boolean to control if the CA service should be enabled.
+
+Default: `true`
+
+#### `package_ensure`
+Ensure attribute for the package
+
+Default: `'installed'`
+
+#### `package_name`
+Name of the package(s) to manage
+
+Default: `'puppetserver'`
+
+#### `service_enable`
+Enable attribute for the service
+
+Default: `true`
+
+#### `service_ensure`
+Ensure attribute for the service
+
+Default: `'running'`
+
+#### `java_args`
+Hash with Java arguments to set for puppetserver. `puppetserver::config::java_arg` resources are created from hash.
+
+Default: `undef`
+
+#### `bootstrap_settings`
+Hash with `file_line` resources for configuring lines in bootstrap.cfg
+
+Default: `undef`
+
+#### `puppetserver_settings`
+Hash with HOCON style settings for puppetserver.conf. `puppetserver::config::hocon` resources are created from hash.
+
+Default: `undef`
+
+#### `webserver_settings`
+Hash with HOCON style settings for webserver.conf. `puppetserver::config::hocon` resources are created from hash.
+
+Default: `undef`
+
+
+### Class: puppetserver::config
+
+Internal class to do puppetserver configuration.
+
+#### `enable_ca`
+Boolean to control if the CA service should be enabled.
+
+Default: `$::puppetserver::enable_ca`
+
+#### `java_args`
+Hash with Java arguments to set for puppetserver. `puppetserver::config::java_arg` resources are created from hash.
+
+Default: `$::puppetserver::java_args`
+
+#### `bootstrap_settings`
+Hash with `file_line` resources for configuring lines in bootstrap.cfg
+
+Default: `$::puppetserver::bootstrap_settings`
+
+#### `puppetserver_settings`
+Hash with HOCON style settings for puppetserver.conf. `puppetserver::config::hocon` resources are created from hash.
+
+Default: `$::puppetserver::puppetserver_settings`
+
+#### `webserver_settings`
+Hash with HOCON style settings for webserver.conf. `puppetserver::config::hocon` resources are created from hash.
+
+Default: `$::puppetserver::webserver_settings`
+
+
+### Resource: puppetserver::config::java_arg
+
+Wrapper to manage JAVA_ARGS in puppetserver sysconfig. Uses `ini_subsetting` from `puppetlabs-inifile`.
+
+#### `namevar`
+Name of the setting to change.
+
+#### `ensure`
+Set to `absent` to remove a setting
+
+Default: `present`
+
+#### `value`
+Value for the setting.
+
+
+### Resource: puppetserver::config::hocon
+
+Wrapper to create `hocon_setting` resources from `puppetlabs-hocon`.
+
+#### `ensure`
+Ensures that the resource is present. Valid values are 'present', 'absent'.
+
+Default: `present`
+
+#### `path`
+The HOCON file in which Puppet will ensure the specified setting.
+
+#### `setting` (namevar)
+The name of the HOCON file setting to be defined.
+
+#### `type`
+The type of the value passed into the value parameter. This value should be a string, with valid values being 'number', 'boolean', 'string', 'hash', 'array', 'array_element', and 'text'.
+
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
-
-## Development
-
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+Module is tested using Puppet 3.8.x and Puppetserver 1.x on el7.
