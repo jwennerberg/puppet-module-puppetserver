@@ -34,7 +34,7 @@ class puppetserver (
     ensure => $package_ensure,
   }
 
-  include puppetserver::config
+  include ::puppetserver::config
 
   if ! defined(Service[$service_name]) {
     service { $service_name:

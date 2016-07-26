@@ -31,7 +31,7 @@ class puppetserver::config(
       'ca.certificate-authority-disabled-service' => {
         'line'  => '#puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
         'match' => 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
-      }
+      },
     }
   } else {
     $bootstrap_ca_defaults = {
@@ -42,7 +42,7 @@ class puppetserver::config(
       'ca.certificate-authority-disabled-service' => {
         'line'  => 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
         'match' => 'puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service',
-      }
+      },
     }
   }
 
