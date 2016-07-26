@@ -93,15 +93,30 @@ Hash with `file_line` resources for configuring lines in bootstrap.cfg
 
 Default: `undef`
 
+#### `bootstrap_settings_hiera_merge`
+Boolean to trigger merging hashes for `bootstrap_settings` through all hiera levels.
+
+Default: `false`
+
 #### `puppetserver_settings`
 Hash with HOCON style settings for puppetserver.conf. `puppetserver::config::hocon` resources are created from hash.
 
 Default: `undef`
 
+#### `puppetserver_settings_hiera_merge`
+Boolean to trigger merging hashes for `puppetserver_settings` through all hiera levels.
+
+Default: `false`
+
 #### `webserver_settings`
 Hash with HOCON style settings for webserver.conf. `puppetserver::config::hocon` resources are created from hash.
 
 Default: `undef`
+
+#### `webserver_settings_hiera_merge`
+Boolean to trigger merging hashes for `webserver_settings` through all hiera levels.
+
+Default: `false`
 
 
 ### Class: puppetserver::config

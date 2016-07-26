@@ -1,0 +1,13 @@
+---
+puppetserver::bootstrap_settings:
+  'bootstrap_settings_from_hiera_fqdn':
+    line:  'from_hiera_fqdn242'
+    match: 'from_hiera_fqdn'
+
+puppetserver::puppetserver_settings:
+  'puppetserver_settings_from_hiera_fqdn':
+    value: '242'
+
+puppetserver::webserver_settings:
+  'webserver_settings_from_hiera_fqdn':
+    value: '242'

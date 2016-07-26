@@ -107,4 +107,95 @@ describe 'puppetserver::config' do
       end
     end
   end
+
+  describe 'with hiera providing data from multiple levels' do
+    let(:facts) do
+      {
+        :fqdn          => 'all_settings',
+        :test          => 'all_settings',
+        :puppetversion => '3.8.0',
+      }
+    end
+
+    context 'with defaults for all parameters' do
+      it { should have_file_line_resource_count(3) }
+      it { should contain_file_line('ca.certificate-authority-service') }
+      it { should contain_file_line('ca.certificate-authority-disabled-service') }
+      it { should contain_file_line('bootstrap_settings_from_hiera_fqdn') }
+
+      it { should have_puppetserver__config__hocon_resource_count(2) }
+      it { should contain_puppetserver__config__hocon('puppetserver_settings_from_hiera_fqdn') }
+      it { should contain_puppetserver__config__hocon('webserver_settings_from_hiera_fqdn') }
+    end
+
+    context 'with bootstrap_settings_hiera_merge set to valid <true>' do
+      let(:params) { { :bootstrap_settings_hiera_merge => true } }
+      it { should have_file_line_resource_count(4) }
+      it { should contain_file_line('ca.certificate-authority-service') }
+      it { should contain_file_line('ca.certificate-authority-disabled-service') }
+      it { should contain_file_line('bootstrap_settings_from_hiera_fqdn') }
+      it { should contain_file_line('bootstrap_settings_from_hiera_test') }
+    end
+
+    context 'with puppetserver_settings_hiera_merge set to valid <true>' do
+      let(:params) { { :puppetserver_settings_hiera_merge => true } }
+
+      it { should have_puppetserver__config__hocon_resource_count(3) }
+      it { should contain_puppetserver__config__hocon('puppetserver_settings_from_hiera_fqdn') }
+      it { should contain_puppetserver__config__hocon('puppetserver_settings_from_hiera_test') }
+    end
+
+    context 'with webserver_settings_hiera_merge set to valid <true>' do
+      let(:params) { { :webserver_settings_hiera_merge => true } }
+
+      it { should have_puppetserver__config__hocon_resource_count(3) }
+      it { should contain_puppetserver__config__hocon('webserver_settings_from_hiera_fqdn') }
+      it { should contain_puppetserver__config__hocon('webserver_settings_from_hiera_test') }
+    end
+  end
+
+  describe 'variable type and content validations' do
+    # set needed custom facts and variables
+    let(:facts) do
+      {
+        :puppetversion => '3.8.0'
+      }
+    end
+    let(:mandatory_params) do
+      {
+        #:param => 'value',
+      }
+    end
+
+    validations = {
+      'boolean/stringified' => {
+        :name    => %w(bootstrap_settings_hiera_merge puppetserver_settings_hiera_merge webserver_settings_hiera_merge),
+        :valid   => [true, 'true', false, 'false'],
+        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => 'is not a boolean',
+      },
+    }
+
+    validations.sort.each do |type, var|
+      var[:name].each do |var_name|
+        var[:params] = {} if var[:params].nil?
+        var[:valid].each do |valid|
+          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
+            it 'should fail' do
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+            end
+          end
+        end
+      end # var[:name].each
+    end # validations.sort.each
+  end # describe 'variable type and content validations'
+
 end
