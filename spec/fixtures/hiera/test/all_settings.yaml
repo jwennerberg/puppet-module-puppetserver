@@ -1,0 +1,13 @@
+---
+puppetserver::bootstrap_settings:
+  'bootstrap_settings_from_hiera_test':
+    line:  'from_hiera_test242'
+    match: 'from_hiera_test'
+
+puppetserver::puppetserver_settings:
+  'puppetserver_settings_from_hiera_test':
+    value: '242'
+
+puppetserver::webserver_settings:
+  'webserver_settings_from_hiera_test':
+    value: '242'
